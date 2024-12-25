@@ -1,34 +1,35 @@
-name: wif-ci
+name: Create GCP Bucket with Workload Identity Federation
+
 on:
   push:
-    branches: 
-       - main
+    branches:
+      - main # Or your main branch
+
 jobs:
-  build:
-    name: "Test WIF"
+  create-bucket:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: read # For checking out the code
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - id: auth
-        uses: google-github-actions/auth@v0.4.0
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: Authenticate to GCP with Workload Identity Federation
+        uses: google-github-actions/auth@v1
         with:
-          token_format: "access_token"
-          create_credentials_file: true
-          activate_credentials_file: true
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
-          service_account: ${{ secrets.SERVICE_ACCOUNT }}
-          access_token_lifetime: '100s'
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.3.0
-      - name: set crdential_file
-        run: gcloud auth login --cred-file=${{steps.auth.outputs.credentials_file_path}}
-      - name: Run gcloud
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }} # Store your WIF config in secrets
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Create GCP Bucket
         run: |
-          BUCKET_NAME="your-unique-bucket-name-12490112955"
-          gcloud storage buckets create $BUCKET_NAME --location=US
-          echo "Bucket created: gs://$BUCKET_NAME"
+          BUCKET_NAME="my-unique-bucket-${GITHUB_RUN_ID}" # Use a unique name
+          gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} gs://${BUCKET_NAME}
+          echo "Bucket created: gs://${BUCKET_NAME}"
+
+      - name: Verify Bucket Creation (Optional)
+        run: |
+          gsutil ls gs://${BUCKET_NAME}
