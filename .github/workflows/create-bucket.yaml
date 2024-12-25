@@ -20,8 +20,8 @@ jobs:
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
           create_credentials_file: false
       - name: Create GCP Bucket
-       # env:
-       #   GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
         run: |
           BUCKET_NAME="your-unique-bucket-name-${{ github.run_id }}"
           gcloud storage buckets create gs://$BUCKET_NAME --location=US
