@@ -1,0 +1,26 @@
+name: Create GCP Bucket
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+  push:
+    branches:
+      - main
+
+jobs:
+  create-bucket:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for Workload Identity Federation
+    steps:
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: projects/${{ secrets.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Create GCP Bucket
+        run: |
+          BUCKET_NAME="your-unique-bucket-name-${GITHUB_SHA}" # Create a unique bucket name
+          gsutil mb gs://$BUCKET_NAME # Create the bucket
+          echo "Bucket created: gs://$BUCKET_NAME"
