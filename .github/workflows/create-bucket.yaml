@@ -18,7 +18,7 @@ jobs:
         with:
           workload_identity_provider: projects/${{ secrets.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
-          create_credentials_file: false
+          create_credentials_file: true
       - name: Authenticate with Credentials File
         run: gcloud auth activate-service-account --key-file="${{ steps.auth.outputs.credentials_file_path }}"
 
