@@ -19,11 +19,8 @@ jobs:
           workload_identity_provider: projects/${{ secrets.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
           create_credentials_file: true
-      - name: Authenticate with Credentials File
-        run: gcloud auth activate-service-account --key-file=${{ steps.auth.outputs.credentials_file_path }}
-
       - name: Create GCP Bucket
         run: |
-          BUCKET_NAME="your-unique-bucket-name-4dmt1" # Create a unique bucket name
-          gsutil mb gs://$BUCKET_NAME # Create the bucket
+          BUCKET_NAME="your-unique-bucket-name-${{ github.run_id }}"
+          gsutil mb gs://$BUCKET_NAME
           echo "Bucket created: gs://$BUCKET_NAME"
