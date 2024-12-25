@@ -20,6 +20,8 @@ jobs:
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
           create_credentials_file: true
       - name: Create GCP Bucket
+        env:
+          CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: ${{ steps.auth.outputs.credentials_file_path }}
         run: |
           BUCKET_NAME="your-unique-bucket-name-${{ github.run_id }}"
           gsutil mb gs://$BUCKET_NAME
