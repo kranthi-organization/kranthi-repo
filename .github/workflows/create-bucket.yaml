@@ -12,19 +12,10 @@ jobs:
       id-token: write # This is the crucial line
       contents: read # Often needed for actions/checkout
 
-    steps:
-
-      - name: Print Secrets
-        run: |
-          echo "GCP_PROJECT_NUMBER: ${{ secrets.GCP_PROJECT_NUMBER }}"
-          echo "GCP_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}"
-          echo "GCP_WORKLOAD_IDENTITY_POOL_ID: ${{ secrets.GCP_WORKLOAD_IDENTITY_POOL_ID }}"
-          echo "GCP_WORKLOAD_IDENTITY_PROVIDER_ID: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_ID }}"
-          
+    steps:          
       - name: Checkout code
-        uses: actions/checkout@v3
-      
-
+        uses: actions/checkout@v3     
+        
       - id: 'auth'
         name: Authenticate to GCP with Workload Identity Federation
         uses: google-github-actions/auth@v1
