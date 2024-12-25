@@ -18,10 +18,14 @@ jobs:
         with:
           workload_identity_provider: projects/${{ secrets.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
-          create_credentials_file: false
+          create_credentials_file: true
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+      - name: set crdential_file
+        run: gcloud auth login --cred-file=${{steps.auth.outputs.credentials_file_path}}
 
       - name: Create GCP Bucket
         run: |
-          BUCKET_NAME="your-unique-bucket-name-4dmt" # Create a unique bucket name
+          BUCKET_NAME="your-unique-bucket-name-4dmt1" # Create a unique bucket name
           gsutil mb gs://$BUCKET_NAME # Create the bucket
           echo "Bucket created: gs://$BUCKET_NAME"
