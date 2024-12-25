@@ -22,7 +22,9 @@ jobs:
       - name: Create GCP Bucket
         env:
           CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: ${{ steps.auth.outputs.credentials_file_path }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
         run: |
+          gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
           BUCKET_NAME="your-unique-bucket-name-${{ github.run_id }}"
           gsutil mb gs://$BUCKET_NAME
           echo "Bucket created: gs://$BUCKET_NAME"
