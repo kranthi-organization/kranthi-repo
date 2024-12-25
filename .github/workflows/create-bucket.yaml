@@ -1,30 +1,33 @@
-name: Create GCP Bucket
-
+name: wif-ci
 on:
-  workflow_dispatch: # Allows manual triggering of the workflow
   push:
-    branches:
-      - main
-
+    branches:- 'main'
 jobs:
-  create-bucket:
+  build:
+    name: "Test WIF"
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     permissions:
-      id-token: write # Required for Workload Identity Federation
+      contents: 'read'
+      id-token: 'write'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - id: auth
-        name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v0.4.0
         with:
           token_format: "access_token"
-          workload_identity_provider: projects/${{ secrets.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
-          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
           create_credentials_file: true
-      - name: Authenticate with Credentials File
-        run: gcloud auth activate-service-account --key-file="${{ steps.auth.outputs.credentials_file_path }}"
-
-      - name: Create GCP Bucket
-        #env:
-          #GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+          activate_credentials_file: true
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          access_token_lifetime: '100s'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+      - name: set crdential_file
+        run: gcloud auth login --cred-file=${{steps.auth.outputs.credentials_file_path}}
+      - name: Run gcloud
         run: |
-          gcloud auth list
+          BUCKET_NAME="your-unique-bucket-name-12490112955"
+          gcloud storage buckets create $BUCKET_NAME --location=US
+          echo "Bucket created: gs://$BUCKET_NAME"
