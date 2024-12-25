@@ -21,6 +21,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           #workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.GCP_WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_ID }}
+          project: 'github-project-kranthi2'
           workload_identity_provider: 'projects/774894375415/locations/global/workloadIdentityPools/your-pool-id/providers/github-provider1'
           service_account: 'github-actions-sa@github-project-kranthi2.iam.gserviceaccount.com'
       - name: Set up gcloud CLI
@@ -31,9 +32,9 @@ jobs:
           echo "Id Token: ${{ steps.auth.outputs.id_token }}"
           echo "Context: ${{ toJson(github.context) }}"
 
-      - name: Set GCP Project
+      #- name: Set GCP Project
         #run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }} # Set the project
-        run: gcloud config set project github-project-kranthi2 # Set the project
+      #  run: gcloud config set project github-project-kranthi2 # Set the project
 
       - name: Create GCP Bucket
         run: |
