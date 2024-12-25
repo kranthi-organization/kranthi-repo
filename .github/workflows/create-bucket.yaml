@@ -1,4 +1,4 @@
-name: Create GCP Bucket with Workload Identity Federation
+name: Create GCP Bucket with Workload Identity Federation (Separate Secrets)
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   create-bucket:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # For checking out the code
+      contents: read
 
     steps:
       - name: Checkout code
@@ -19,17 +19,28 @@ jobs:
         name: Authenticate to GCP with Workload Identity Federation
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }} # Store your WIF config in secrets
+          workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.GCP_WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_ID }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
 
       - name: Create GCP Bucket
         run: |
-          BUCKET_NAME="my-unique-bucket-${GITHUB_RUN_ID}" # Use a unique name
+          BUCKET_NAME="my-unique-bucket-${GITHUB_RUN_ID}"
           gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} gs://${BUCKET_NAME}
           echo "Bucket created: gs://${BUCKET_NAME}"
 
       - name: Verify Bucket Creation (Optional)
         run: |
           gsutil ls gs://${BUCKET_NAME}
+
+      - name: Upload a file to the bucket (Optional)
+        run: |
+          echo "This is a test file" > test.txt
+          gsutil cp test.txt gs://${BUCKET_NAME}/
+
+      - name: Make bucket public (Optional, Use with caution!)
+        run: |
+          gsutil acl ch -u AllUsers:R gs://${BUCKET_NAME}
+          echo "Bucket ${BUCKET_NAME} is now publicly readable. Use with extreme caution!"
