@@ -32,7 +32,7 @@ jobs:
           #workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.GCP_WORKLOAD_IDENTITY_POOL_ID }}/providers/${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_ID }}
           project: 'github-project-kranthi4'
           workload_identity_provider: 'projects/137577042409/locations/global/workloadIdentityPools/your-pool-id/providers/github-provider1'
-          service_account: 'github-actions-sa@github-project-kranthi2.iam.gserviceaccount.com'
+          service_account: 'github-actions-sa@github-project-kranthi4.iam.gserviceaccount.com'
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
 
