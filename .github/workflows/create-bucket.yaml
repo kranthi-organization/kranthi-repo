@@ -81,8 +81,7 @@ jobs:
           gcloud compute ssh instance-20250226-113647     --tunnel-through-iap     --project=githubprojectkranthi4     --zone=us-central1-c            --ssh-flag="-4 -L8888:localhost:8888 -N -q -f"
           export HTTPS_PROXY=localhost:8888
           kubectl get ns
+          kubectl create deployment hello-world-deployment --image=nginx:latest --replicas=1 --port=80 -n sftpgo
+          kubectl get deployment -n sftpgo
 
 
-    # The KUBECONFIG env var is automatically exported and picked up by kubectl.
-    - name: 'get-pods'
-      run: kubectl get pods
