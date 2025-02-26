@@ -84,5 +84,5 @@ jobs:
 
 
     # The KUBECONFIG env var is automatically exported and picked up by kubectl.
-    - id: 'get-pods'
-      run: 'kubectl get pods'
+    - name: 'get-pods'
+      run: kubectl get pods
