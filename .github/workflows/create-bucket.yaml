@@ -83,5 +83,6 @@ jobs:
           kubectl get ns
           kubectl create deployment hello-world-deployment --image=nginx:latest --replicas=1 --port=80 -n sftpgo
           kubectl get deployment -n sftpgo
+#To connect to private gke cluster using bastion host use https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastion
 
 
