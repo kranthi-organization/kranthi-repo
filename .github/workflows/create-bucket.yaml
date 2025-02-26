@@ -76,6 +76,13 @@ jobs:
         cluster_name: 'private-gke-cluster'
         location: 'us-central1-a'
 
+    - name: connect to gke cluster
+      run: |
+          gcloud compute ssh instance-20250226-113647     --tunnel-through-iap     --project=githubprojectkranthi4     --zone=us-central1-c            --ssh-flag="-4 -L8888:localhost:8888 -N -q -f"
+          export HTTPS_PROXY=localhost:8888
+          kubectl get ns
+
+
     # The KUBECONFIG env var is automatically exported and picked up by kubectl.
     - id: 'get-pods'
       run: 'kubectl get pods'
