@@ -54,3 +54,24 @@ jobs:
       - name: Verify Bucket Creation (Optional)
         run: |
           gsutil ls gs://${BUCKET_NAME}
+  job_id:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: 'my-project'
+        workload_identity_provider: 'projects/852645311860/locations/global/workloadIdentityPools/your-pool-id/providers/github-provider1'
+
+    - id: 'get-credentials'
+      uses: 'google-github-actions/get-gke-credentials@v2'
+      with:
+        cluster_name: 'private-gke-cluster'
+        location: 'us-central1-a'
+
+    # The KUBECONFIG env var is automatically exported and picked up by kubectl.
+    - id: 'get-pods'
+      run: 'kubectl get pods'
