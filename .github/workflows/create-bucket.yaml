@@ -73,7 +73,7 @@ jobs:
     - id: 'get-credentials'
       uses: 'google-github-actions/get-gke-credentials@v2'
       with:
-        cluster_name: 'githubprojectkranthi4'
+        cluster_name: 'private-gke-cluster'
         location: 'us-central1-a'
 
     # The KUBECONFIG env var is automatically exported and picked up by kubectl.
